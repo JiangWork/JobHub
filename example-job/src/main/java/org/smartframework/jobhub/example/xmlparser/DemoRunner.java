@@ -23,12 +23,12 @@ public class DemoRunner implements Progressable {
 		reporter.report(10);
 		CastorXmlParser<FlightsInfo> parser = new CastorXmlParser<FlightsInfo>(mappingFile);
 		// simulate a time-consuming task
-		for (int i = 10; i <= 100; i++) {
+		for (int i = 10; i <= 100; i += 10) {
 			FlightsInfo info = parser.parse(xmlFile);
 			System.out.println("Time " + i + ", content:" + info.getSource());
 			reporter.report(i);
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				//ignored
 			}
