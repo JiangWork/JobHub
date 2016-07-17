@@ -133,6 +133,9 @@ public class ParameterAccessor {
 		Map<String, String> map = new HashMap<String, String>();
 		if(parameters.containsKey(key)) {
 			String value = parameters.get(key);
+			if (value.trim().length() == 0) {
+				return map;
+			}
 			String[] keyValuePairs = value.split(interDel);
 			for (String keyValue: keyValuePairs) {
 				int index =  keyValue.indexOf(intraDel);

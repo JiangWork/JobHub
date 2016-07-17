@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="job-example" basedir="." default="makejar">
+	<property name="src.dir" value="src/main/java" />
+	<property name="build.dir" value="build" />
+
+	<path id="master-classpath">
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${build.dir}" />
+	</path>
+	
+
+    <target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+        <echo>Java/JVM detail version: ${java.version}</echo>
+	</target>
+
+
+    <target name="mkdirs">
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+	<target name="compile">
+        <javac destdir="${build.dir}" source="1.6" target="1.6" debug="true" deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<target name="makejar" depends="mkdirs,compile">
+		<jar destfile="job-example.jar" basedir="${build.dir}"/>
+		<delete dir="${build.dir}" />
+	</target>
+
+</project>

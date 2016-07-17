@@ -2,6 +2,7 @@ package org.smartframework.jobhub.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,17 @@ public class StringUtils {
 			return EMPTY;
 		}
 		return String.valueOf(obj);
+	}
+	
+	public static String stringfyObjectArray(Object[] array) {
+		if (array == null) {
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		for(Object obj: array) {
+			sb.append("," + String.valueOf(obj));
+		}
+		return sb.length() >= 1 ? sb.toString().substring(1) : "";
 	}
 	
 	/**
@@ -48,10 +60,14 @@ public class StringUtils {
 		return sb.length() >= 1 ? sb.toString().substring(1) : "";
 	}
 	
-	public static String stringfyException(Exception e) {
+	public static String stringfyException(Throwable e) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
 		return sw.toString();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(stringfyMap(new HashMap<String, String>()));
 	}
 }

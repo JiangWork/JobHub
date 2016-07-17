@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -196,6 +197,8 @@ public class JobSubmitter {
 			int index = jar.lastIndexOf(File.separator);
 			if (index != -1) {
 				jars.add(jar.substring(index + 1));
+			} else {
+				jars.add(jar);
 			}
 		}
 		def.setJarsList(jars);
@@ -204,6 +207,8 @@ public class JobSubmitter {
 			int index = resource.lastIndexOf(File.separator);
 			if (index != -1) {
 				resources.add(resource.substring(index + 1));
+			} else {
+				resources.add(resource);
 			}
 		}
 		def.setResourcesList(resources);
@@ -251,7 +256,7 @@ public class JobSubmitter {
 				throw new JobException(e.getMessage(), e);
 			}
 		}
-		System.out.println("Upload files done. Elapsed time:" + (System.currentTimeMillis() - start) + " ms.");
+		System.out.println("Upload files done. Elapsed time: " + (System.currentTimeMillis() - start) + " ms.");
 	}
 	
 	/**
@@ -301,13 +306,16 @@ public class JobSubmitter {
 			}
 			try {
 				status = client.query(jobId);
-				System.out.println(String.format("JobStatus [%s]: %d of 100 ", status.getState(), status.progress));
+				System.out.println(String.format("%s [%s]: %d of 100 ", new Date(), status.getState(), status.progress));
 				if (status.progress >= 100 || status.getState() == JobState.DONE) {
-					System.out.print("SUMMARY: >> startTime=" + new Date(status.startTime));
+					System.out.println("\n###################SUMMARY#################");
+					System.out.println("\tSTARTTIME: " + new Date(status.startTime));
+					System.out.println("\tENDTIME:   " + new Date(System.currentTimeMillis()));
 					if (!status.success) {
-						System.out.println(" status=FAIL, reason=" + status.reason);
+						System.out.println("\tSTATUS:    FAIL");
+						System.out.println("\tREASON:    " + status.reason);
 					} else {
-						System.out.println(" status=SUCCESS.");
+						System.out.println("\tSTATUS:    SUCCESS");
 					}
 					break;
 				}
@@ -364,6 +372,13 @@ public class JobSubmitter {
 			String value = argument.substring(index + 1);
 			argsMap.put(key, value);
 		}		
+		System.out.println("Input arguments are followings:");
+		Iterator<String> iter = argsMap.keySet().iterator();
+		while(iter.hasNext()) {
+			String key = iter.next();
+			System.out.println(String.format("\t%s:%s", key, argsMap.get(key)));
+		}
+		System.out.println();
 		// setting parameters
 		JobSubmitter client = new JobSubmitter();
 		String hostName = argsMap.remove(JobSubmitter.HOSTNAME_KEY);
@@ -419,7 +434,6 @@ public class JobSubmitter {
 		client.setTimeout(pa.getLong(JobDefinition.JOB_TIMEOUT_KEY, 1*60*60*1000));
 		client.setSubmitter(pa.getString(JobDefinition.JOB_SUBMITTER_KEY, "unknown"));
 		client.addEnvs(pa.getMap(JobDefinition.JOB_ENV_KEY));
-		client.addProperty(JobDefinition.JOB_REPORTER_CLASS_KEY, pa.getString(JobDefinition.JOB_REPORTER_CLASS_KEY, DefaultProgressReporter.class.getName()));
 		argsMap.remove(JobDefinition.JOB_NAME_KEY);
 		argsMap.remove(JobDefinition.JOB_METHODARGS_KEY);
 		argsMap.remove(JobDefinition.JOB_RESOURCES_KEY);

@@ -1,0 +1,49 @@
+<!DOCTYPE databases PUBLIC
+"-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+"http://castor.exolab.org/mapping.dtd">
+<mapping>
+
+<description>A mapping settings for FlightInfo class</description>
+
+
+<class name="org.smartframework.jobhub.example.xmlparser.object.FlightsInfo" auto-complete="true">
+    <map-to xml="flightInfo"/>
+    <field name="source">
+        <bind-xml name="source" node="attribute"/>
+    </field>
+     <field name="updated">
+        <bind-xml name="updated" node="attribute"/>
+    </field>
+     <field name="flights" collection="arraylist"  type="org.smartframework.jobhub.example.xmlparser.object.Flights">
+        <bind-xml name="flight"/>
+    </field>
+</class>
+
+<class name="org.smartframework.jobhub.example.xmlparser.object.Flights" auto-complete="true">
+    <field name="area">
+        <bind-xml name="area" node="attribute"/>
+    </field>
+     <field name="airlines" collection="arraylist"  type="org.smartframework.jobhub.example.xmlparser.object.Airline">
+        <bind-xml name="airline"/>
+    </field>
+</class>
+
+<class name="org.smartframework.jobhub.example.xmlparser.object.Airline" auto-complete="true">
+    <field name="model">
+        <bind-xml name="model" node="attribute"/>
+    </field>
+    <field name="departure">
+        <bind-xml name="departure" node="attribute"/>
+    </field>
+    <field name="arrival">
+        <bind-xml name="arrival" node="attribute"/>
+    </field>
+	    <field name="from">
+        <bind-xml name="from" node="attribute"/>
+    </field>
+	    <field name="to">
+        <bind-xml name="to" node="attribute"/>
+    </field>
+</class>
+
+</mapping>

@@ -98,6 +98,7 @@ public class JobServer {
 		}
 		ctx.setJobServer(this);
 		memoryMonitor = new MemoryMonitor();
+		memoryMonitor.setAutoPurge(true);
 		memoryMonitor.start();
 		running = true;
 	}

@@ -94,9 +94,9 @@ public class ClientProtocolImpl implements ClientProtocol.Iface {
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args)
 				throws Throwable {
-			logger.info(method.getName() + " start to call.");
+			//logger.info(method.getName() + " start to call.");
 			Object ret = method.invoke(target, args);
-			logger.info(method.getName() + " end of call.");
+			//logger.info(method.getName() + " end of call.");
 			return ret;
 		}
 		

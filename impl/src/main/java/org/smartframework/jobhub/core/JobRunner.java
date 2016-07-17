@@ -69,7 +69,8 @@ public class JobRunner implements Runnable {
 			if (result.getExitCode() == 0) {
 				entry.finishSuccess();
 			} else {
-				entry.finishFail(IOUtils.read(DirectoryAllocator.stderrPath(jobId)));
+				// whether there is timeout issue.
+				entry.finishFail(result.getError() + "\n" + IOUtils.read(DirectoryAllocator.stderrPath(jobId)));
 				logger.error(entry.getReason());
 			}
 		} catch (Exception e) {
@@ -115,8 +116,7 @@ public class JobRunner implements Runnable {
 		// log the pid
 		bw.write("echo $$ > " + DirectoryAllocator.pidPath(jobId) + "\n");
 		bw.write("cd " + DirectoryAllocator.workingDirectory(jobId) + "\n");
-		bw.write("JAVA_OPTS=\"-Xms20m -Xmx4g\"\n");
-		bw.write("JAVA_EXEC=`which java`\n");
+		bw.write(buildSymLink());
 		bw.write("exec $JAVA_EXEC $JAVA_OPTS ");
 		bw.write(LaunchJobTask.class.getName());
 		bw.write(" 	127.0.0.1 " + ServerContext.INNER_PROTOCOL_PORT + 
@@ -125,6 +125,16 @@ public class JobRunner implements Runnable {
 		bw.write(" 1>>" + DirectoryAllocator.stdoutPath(jobId));
 		bw.write(" 2>>" + DirectoryAllocator.stderrPath(jobId) + "\n");
 		bw.close();
+	}
+	
+	public String buildSymLink() {
+		List<String> fileResources = entry.getDefinition().getResourcesList();
+		StringBuilder sb = new StringBuilder();
+		for (String resource: fileResources) {
+			sb.append("ln -s " + DirectoryAllocator.uploadDirectory(jobId) + File.separator + resource + " .");
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 	
 	public String buildClasspath() {
@@ -178,6 +188,8 @@ public class JobRunner implements Runnable {
 		envMap.put("WORK_DIR", "\"" + DirectoryAllocator.workingDirectory(jobId) + "\"");
 		envMap.put("USER", "\"" + entry.getDefinition().getSubmitter() + "\"");
 		envMap.put("CLASSPATH", "\"" + buildClasspath() + "\"");
+		envMap.put("JAVA_OPTS", "\"-Xms20m -Xmx4g\"");
+		envMap.put("JAVA_EXEC", "`which java`");
 		return envMap;
 	}
 	

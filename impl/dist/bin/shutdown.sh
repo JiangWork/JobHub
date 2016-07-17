@@ -21,9 +21,9 @@ else
         done
         ps -p $PID > /dev/null
         if [ $? -eq 0 ]; then
-            echo "JobServer $PID wasn't shut down succesfully, please try later."
+            echo "JobServer with pid $PID wasn't shut down succesfully, please try later."
         else
-            echo "JobServer $PID was shut down succesfully."
+            echo "JobServer with pid $PID was shut down succesfully."
         fi
     done
 fi

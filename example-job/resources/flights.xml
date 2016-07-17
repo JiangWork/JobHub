@@ -1,0 +1,19 @@
+<flightInfo source="airline.com" updated="2013/3/2 00:01 am">
+<flight area="China">
+	<airline model="A320" departure="13:10 pm" arrival="00:23am" from="Shanghai" to="Xiamen"/>
+	<airline model="A380" departure="17:10 pm" arrival="00:23am" from="Beijing" to="Hangzhou"/>
+	<airline model="717" departure="00:10 pm" arrival="00:23am" from="Chengdu" to="Fujian"/>
+	<airline model="A320" departure="13:10 pm" arrival="00:23am" from="Xiamen" to="Shanghai"/>
+</flight>
+<flight area="US">
+	<airline model="A320" departure="13:10 pm" arrival="00:23am" from="San francisco" to="Philadelphia"/>
+	<airline model="A380" departure="17:10 pm" arrival="00:23am" from="Chicago" to="Las Angeles"/>
+	<airline model="717" departure="00:10 pm" arrival="00:23am" from="Pittsburgh" to="Las Angeles"/>
+	<airline model="A320" departure="13:10 pm" arrival="00:23am" from="Atlanta" to="San francisco"/>
+</flight>
+<flight area="England">
+	<airline model="A320" departure="13:10 pm" arrival="00:23am" from="Birmingham" to="London"/>
+	<airline model="A380" departure="17:10 pm" arrival="00:23am" from="Oxford" to="Liverpool"/>
+</flight>
+</flightInfo>
+	

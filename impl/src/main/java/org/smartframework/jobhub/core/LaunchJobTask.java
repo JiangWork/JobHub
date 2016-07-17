@@ -40,7 +40,7 @@ public class LaunchJobTask {
 		try {
 			task.setup(args);
 			task.doRun();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error(e.getMessage(), e);
 			System.err.println(StringUtils.stringfyException(e)); // to be caught and redirected to err
 			ret = 1;       // to be caught by script runner
@@ -87,7 +87,7 @@ public class LaunchJobTask {
 		
 	}
 	
-	public void doRun() throws ClassNotFoundException, InstantiationException, IllegalAccessException, TException, IllegalArgumentException, InvocationTargetException {
+	public void doRun() throws Throwable {
 		String mainClass = def.getMainClass();
 		Class<?> clazz =  Class.forName(mainClass);
 		Object obj = clazz.newInstance();
@@ -104,12 +104,12 @@ public class LaunchJobTask {
 	 */
 	public void configureLog(String logPath) {
 		Properties pro = new Properties();
-        pro.put("log4j.rootLogger", "DEBUG,C,R");
+        pro.put("log4j.rootLogger", "DEBUG,R");
         
-        pro.put("log4j.appender.C", "org.apache.log4j.ConsoleAppender");
-        pro.put("log4j.appender.C.Threshold", "INFO");
-        pro.put("log4j.appender.C.layout", "org.apache.log4j.PatternLayout");
-        pro.put("log4j.appender.C.layout.ConversionPattern", "%n %m");
+//        pro.put("log4j.appender.C", "org.apache.log4j.ConsoleAppender");
+//        pro.put("log4j.appender.C.Threshold", "INFO");
+//        pro.put("log4j.appender.C.layout", "org.apache.log4j.PatternLayout");
+//        pro.put("log4j.appender.C.layout.ConversionPattern", "%m %n");
 
         pro.put("log4j.appender.R", "org.apache.log4j.RollingFileAppender");
         pro.put("log4j.appender.R.File", logPath);
@@ -138,6 +138,7 @@ public class LaunchJobTask {
 				reporter.setClient(client);
 				reporter.setJobId(jobId);
 				progressable.setReporter(reporter);
+				logger.debug("Setting default reporter: " + reporter);
 			} else {
 				Class<?> clazz = Class.forName(reporterClass);
 				if (!ProgressReporter.class.isAssignableFrom(clazz)) {
@@ -148,12 +149,13 @@ public class LaunchJobTask {
 					((JobIdAware)reporter).setJobId(jobId);
 				}
 				progressable.setReporter((ProgressReporter)reporter);
+				logger.debug("Setting custom reporter: " + reporter);
 			}
 		}
 	}
 	
 	
-	public void invokeMethod(Object obj, JobDefinition def) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public void invokeMethod(Object obj, JobDefinition def) throws Throwable {
 		Class<?> clazz = obj.getClass();
 		String methodName = def.getEnterMethod();
 		String[] methodArgs = def.getEnterArgs().split(",");
@@ -168,14 +170,26 @@ public class LaunchJobTask {
 				}
 			}
 		}
+		if (candidate == null) {
+			throw new JobException("No such method was found: " + methodName);
+		}
 		// method parameters only support String array, like main
 		candidate.setAccessible(true);
 		Type[] types = candidate.getParameterTypes();
 		if(types.length == 0) {
-			candidate.invoke(obj);
+			try{
+				candidate.invoke(obj);
+			} catch(InvocationTargetException e) {
+				throw e.getCause();
+			}
 		} else {
 			if (types.length == 1 && types[0] == String[].class) {
-				candidate.invoke(obj, new Object[]{methodArgs});
+				logger.debug("Invoking method " + methodName + " with parameters: " + StringUtils.stringfyObjectArray(methodArgs));
+				try{
+					candidate.invoke(obj, new Object[]{ methodArgs });
+				} catch(InvocationTargetException e) {
+					throw e.getCause();
+				}
 			} else {
 				throw new IllegalArgumentException("Only support String array as parameters.");
 			}
