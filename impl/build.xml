@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="jobhub" basedir="." default="makezip">
+	<property name="src.dir" value="src/main/java" />
+	<property name="src.test.dir" value="src/test/java" />
+	<property name="build.dir" value="build" />
+	<property name="deplibs" value="lib"/>
+	<property name="dist.dir" value="dist"/>
+	<property name="dist.lib.dir" value="${dist.dir}/lib"/>
+	<property name="jarname" value="jobhub-1.0.0.jar" />
+	<property name="config.dir" value="conf" />
+
+	<path id="master-classpath">
+		<fileset dir="${dist.lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${build.dir}" />
+	</path>
+	
+
+    <target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+		<delete includeemptydirs="true">
+			<fileset dir="${dist.lib.dir}" includes="**/*.jar" />
+		</delete>
+        <echo>Java/JVM detail version: ${java.version}</echo>
+	</target>
+
+
+    <target name="mkdirs">
+        <mkdir dir="${build.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+        <mkdir dir="${dist.lib.dir}"/>
+    </target>
+
+	<target name="copyjars" depends="clean">
+		<copy overwrite="Yes" todir="${dist.lib.dir}">
+            <fileset dir="${deplibs}" includes="**/*.jar"/>
+        </copy>
+	</target>
+
+	<target name="compile" depends="copyjars">
+		<copy todir="${build.dir}">
+            <fileset dir="${src.dir}">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <javac destdir="${build.dir}" source="1.6" target="1.6" debug="true" deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<target name="makejar" depends="mkdirs,compile">
+		<jar destfile="${dist.lib.dir}/${jarname}" basedir="${build.dir}"/>
+        <delete dir="${build.dir}"/>
+	</target>
+	
+    <target name="makezip" depends="makejar">
+	    <delete file="${dist.dir}/jobhub.zip" />
+        <delete dir="${dist.dir}/conf"/>
+        <!--mkdir dir="${dist.dir}/config" /-->
+        <copy todir="${dist.dir}/conf">
+            <fileset dir="conf"/>
+        </copy>
+		<zip destfile="${dist.dir}/jobhub.zip" basedir="${dist.dir}" />
+	</target>
+
+</project>
