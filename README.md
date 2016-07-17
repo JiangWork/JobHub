@@ -15,7 +15,7 @@ sh ../jobhub/bin/submit.sh \
    <br> -Djob.name=DemoRun-Xml \
    <br>  -Djob.mainclass=org.smartframework.jobhub.example.xmlparser.DemoRunner \
    <br>  -Djob.method.name=parse \
-   <br>  -Djob.method.args=flights.xml,flights-mapping.xml\
+   <br>  -Djob.method.args=flights.xml,flights-mapping.xml \
    <br>  -Djob.jars=job-example.jar,lib/castor-core-1.3.3.jar,lib/castor-xml-1.3.3.jar,lib/commons-lang-2.6.jar,lib/commons-logging.jar,lib/log4j-1.2.14.jar \
    <br>  -Djob.resources=resources/flights.xml,resources/flights-mapping.xml \
    <br>  -Djob.timeout=100000 \
