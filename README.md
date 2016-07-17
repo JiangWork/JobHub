@@ -9,7 +9,7 @@ Folder <b>example-job</b> contains a simple job for demonstrating the pipeline o
 
 To start up the server, download jobhub.zip to you computer, unzip it and modify the jobhub.workdir in conf/server/server.properties to you own directory. And then start the server using bin/startup.sh.
 
-To submit the job, use bin/submit.sh, here is a example:
+To submit the job in <b>example-job</b>, use bin/submit.sh, here is a example:
 
 sh ../jobhub/bin/submit.sh \
    <br> -Djob.name=DemoRun-Xml \
