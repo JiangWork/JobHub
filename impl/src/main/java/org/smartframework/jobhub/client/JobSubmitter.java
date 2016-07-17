@@ -431,7 +431,7 @@ public class JobSubmitter {
 		client.setJobName(pa.getString(JobDefinition.JOB_NAME_KEY, "undefined"));
 		client.setEnterArgs(pa.getString(JobDefinition.JOB_METHODARGS_KEY, ""));
 		client.addResources(pa.getList(JobDefinition.JOB_RESOURCES_KEY));
-		client.setTimeout(pa.getLong(JobDefinition.JOB_TIMEOUT_KEY, 1*60*60*1000));
+		client.setTimeout(pa.getLong(JobDefinition.JOB_TIMEOUT_KEY, 12*60*60*1000));
 		client.setSubmitter(pa.getString(JobDefinition.JOB_SUBMITTER_KEY, "unknown"));
 		client.addEnvs(pa.getMap(JobDefinition.JOB_ENV_KEY));
 		argsMap.remove(JobDefinition.JOB_NAME_KEY);
