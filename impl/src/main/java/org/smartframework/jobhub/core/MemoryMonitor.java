@@ -18,7 +18,15 @@ import org.smartframework.jobhub.utils.ProcResult;
  * It will update the memory usage for alive PIDs periodically.
  * 
  * Also it provide facility to purge Pids which are dead.
- *  
+ * 
+ * <p><b>Usage:</b>
+ * <pre>
+ *  MemoryMonitor monitor = new MemoryMonitor();
+ *  monitor.add(14501);
+ *  monitor.setAutoPurge(true);
+ *  monitor.start();
+ *  monitor.getPidStatus(14501);
+ * </pre>
  * @author jiangzhao
  * @date Jul 12, 2016
  * @version V1.0
